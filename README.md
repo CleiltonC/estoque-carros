@@ -23,3 +23,8 @@ Using nodejs 16.0.5
 node_modules - `intentionally uploaded`
 
 In the project directory, just run node index.js
+
+
+#### Database
+
+Database implemented using MongoDB
