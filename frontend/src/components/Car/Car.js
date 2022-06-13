@@ -9,8 +9,17 @@ const api = axios.create({
 
 const Car = (props) => {
   const history = useNavigate();
-  const { _id, img, veiculo, marca, ano, descricao, createdAt, updateAt } =
-    props.car;
+  const {
+    _id,
+    img,
+    veiculo,
+    marca,
+    ano,
+    descricao,
+    vendido,
+    createdAt,
+    updateAt,
+  } = props.car;
   const deleteHandler = async () => {
     await api
       .delete(`/${_id}`)
@@ -22,10 +31,11 @@ const Car = (props) => {
   return (
     <div className="card">
       <img src={img ? img : ""} alt={veiculo} />
-      <article>By {marca}</article>
+      <article>Marca: {marca}</article>
       <h3>{veiculo}</h3>
       <h3>{ano}</h3>
       <p>{descricao}</p>
+      <p>{vendido ? "vendido" : "em estoque"}</p>
       <Button LinkComponent={Link} to={`/car/${_id}`} sx={{ mt: "auto" }}>
         Update
       </Button>

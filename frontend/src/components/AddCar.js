@@ -50,8 +50,14 @@ const AddCar = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(inputs);
-    sendRequest().then(() => history("/car"));
+    //console.log(inputs);
+    if (!inputs.veiculo || !inputs.marca || !inputs.ano || inputs.ano < 1886) {
+      alert(
+        "Veiculo, marca e ano nao podem ser em branco, e ano deve ser maior que 1886"
+      );
+    } else {
+      sendRequest().then(() => history("/car"));
+    }
   };
 
   return (

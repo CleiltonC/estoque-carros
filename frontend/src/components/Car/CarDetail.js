@@ -1,4 +1,11 @@
-import { Box, Button, FormLabel, TextField } from "@mui/material";
+import {
+  Box,
+  Button,
+  FormLabel,
+  TextField,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -15,6 +22,7 @@ const CarDetail = () => {
     descricao: "",
     img: "",
   });
+  const [checked, setChecked] = useState(false);
   const id = useParams().id;
   const history = useNavigate();
 
@@ -27,14 +35,18 @@ const CarDetail = () => {
         descricao: String(inputs.descricao),
         // createdAt: Date(inputs.createdAt),
         // updateAt: Date(inputs.updateAt),
-        //vendido: Boolean(checked),
+        vendido: Boolean(checked ? true : false),
         img: String(inputs.img),
       })
       .then((res) => res.data);
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    sendRequest().then(() => history("/car"));
+    if (!inputs.veiculo || !inputs.marca || !inputs.ano) {
+      alert("Veiculo, marca e ano nao podem ser em branco");
+    } else {
+      sendRequest().then(() => history("/car"));
+    }
   };
   const handleChange = (e) => {
     setInputs((prevState) => ({
@@ -103,6 +115,15 @@ const CarDetail = () => {
               fullWidth
               variant="outlined"
               name="img"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={checked}
+                  onChange={() => setChecked(!checked)}
+                />
+              }
+              label="Available"
             />
             <Button variant="contained" type="submit">
               Update Car
