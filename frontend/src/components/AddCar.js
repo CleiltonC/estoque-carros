@@ -18,7 +18,14 @@ const api = axios.create({
   baseURL: `http://localhost:3333/car/`,
 });
 
-const carsBbrand = ["Hyundai", "Ford", "Fiat", "Chevrolet", "Volksvagen"];
+const carsBbrand = [
+  "Hyundai",
+  "Ford",
+  "Fiat",
+  "Chevrolet",
+  "Volksvagen",
+  "Willys",
+];
 
 const AddCar = () => {
   const history = useNavigate();
@@ -52,7 +59,7 @@ const AddCar = () => {
     await api
       .post("/", {
         veiculo: String(inputs.veiculo),
-        marca: String(inputs.marca),
+        marca: String(selected.marca),
         ano: Number(inputs.ano),
         descricao: String(inputs.descricao),
         // createdAt: Date(inputs.createdAt),
@@ -68,10 +75,10 @@ const AddCar = () => {
     //console.log(inputs);
     if (
       !inputs.veiculo ||
-      !inputs.marca ||
+      !selected.marca ||
       !inputs.ano ||
       inputs.ano < 1886 ||
-      !carsBbrand.includes(inputs.veiculo)
+      !carsBbrand.includes(selected.marca)
     ) {
       alert(
         "Veiculo, marca e ano nao podem ser em branco, e ano deve ser maior que 1886"
