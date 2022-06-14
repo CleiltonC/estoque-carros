@@ -1,8 +1,11 @@
 import {
   Button,
+  FormControl,
   // Checkbox,
   // FormControlLabel,
   FormLabel,
+  MenuItem,
+  Select,
   TextField,
   // Typography,
 } from "@mui/material";
@@ -15,6 +18,8 @@ const api = axios.create({
   baseURL: `http://localhost:3333/car/`,
 });
 
+const carsBbrand = ["Hyundai", "Ford", "Fiat", "Chevrolet", "Volksvagen"];
+
 const AddCar = () => {
   const history = useNavigate();
   const [inputs, setInputs] = useState({
@@ -25,6 +30,9 @@ const AddCar = () => {
     img: "",
   });
   //const [checked, setChecked] = useState(false);
+
+  const [selected, setSelected] = useState({ marca: "" });
+
   const handleChange = (e) => {
     setInputs((prevState) => ({
       ...prevState,
@@ -32,6 +40,13 @@ const AddCar = () => {
     }));
     // console.log(e.target.name, "Value", e.target.value);
   };
+
+  function handleChange2(e) {
+    setSelected((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  }
 
   const sendRequest = async () => {
     await api
@@ -51,7 +66,13 @@ const AddCar = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     //console.log(inputs);
-    if (!inputs.veiculo || !inputs.marca || !inputs.ano || inputs.ano < 1886) {
+    if (
+      !inputs.veiculo ||
+      !inputs.marca ||
+      !inputs.ano ||
+      inputs.ano < 1886 ||
+      !carsBbrand.includes(inputs.veiculo)
+    ) {
       alert(
         "Veiculo, marca e ano nao podem ser em branco, e ano deve ser maior que 1886"
       );
@@ -80,9 +101,25 @@ const AddCar = () => {
           margin="normal"
           fullWidth
           variant="outlined"
-          name="veiculo"
+          inputProps={{ name: "veiculo", id: "veiculo" }}
         />
-        <FormLabel>Marca</FormLabel>
+        <FormControl>
+          <FormLabel>Marca</FormLabel>
+          <Select
+            value={selected.marca}
+            onChange={handleChange2}
+            inputProps={{
+              name: "marca",
+              id: "marca",
+            }}
+          >
+            {carsBbrand.map((value, index) => {
+              return <MenuItem value={value}>{value}</MenuItem>;
+            })}
+          </Select>
+        </FormControl>
+
+        {/* <FormLabel>Marca</FormLabel>
         <TextField
           value={inputs.marca}
           onChange={handleChange}
@@ -90,7 +127,7 @@ const AddCar = () => {
           fullWidth
           variant="outlined"
           name="marca"
-        />
+        /> */}
         <FormLabel>Ano</FormLabel>
         <TextField
           value={inputs.ano}

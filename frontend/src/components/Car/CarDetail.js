@@ -5,6 +5,9 @@ import {
   TextField,
   Checkbox,
   FormControlLabel,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import axios from "axios";
 import React, { useState } from "react";
@@ -13,6 +16,15 @@ import { useNavigate, useParams } from "react-router-dom";
 const api = axios.create({
   baseURL: `http://localhost:3333/car/`,
 });
+
+const carsBbrand = [
+  "Hyundai",
+  "Ford",
+  "Fiat",
+  "Chevrolet",
+  "Volksvagen",
+  "Willys",
+];
 
 const CarDetail = () => {
   const [inputs, setInputs] = useState({
@@ -26,11 +38,13 @@ const CarDetail = () => {
   const id = useParams().id;
   const history = useNavigate();
 
+  const [selected, setSelected] = useState({ marca: "" });
+
   const sendRequest = async () => {
     await api
       .patch(`/${id}`, {
         veiculo: String(inputs.veiculo),
-        marca: String(inputs.marca),
+        marca: String(selected.marca),
         ano: Number(inputs.ano),
         descricao: String(inputs.descricao),
         // createdAt: Date(inputs.createdAt),
@@ -42,7 +56,13 @@ const CarDetail = () => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!inputs.veiculo || !inputs.marca || !inputs.ano) {
+    if (
+      !inputs.veiculo ||
+      !selected.marca ||
+      !inputs.ano ||
+      inputs.ano < 1886 ||
+      !carsBbrand.includes(selected.marca)
+    ) {
       alert("Veiculo, marca e ano nao podem ser em branco");
     } else {
       sendRequest().then(() => history("/car"));
@@ -54,6 +74,13 @@ const CarDetail = () => {
       [e.target.name]: e.target.value,
     }));
   };
+
+  function handleChange2(e) {
+    setSelected((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }));
+  }
 
   return (
     <div>
@@ -79,7 +106,23 @@ const CarDetail = () => {
               variant="outlined"
               name="veiculo"
             />
-            <FormLabel>Marca</FormLabel>
+            <FormControl>
+              <FormLabel>Marca</FormLabel>
+              <Select
+                value={selected.marca}
+                onChange={handleChange2}
+                inputProps={{
+                  name: "marca",
+                  id: "marca",
+                }}
+              >
+                {carsBbrand.map((value, index) => {
+                  return <MenuItem value={value}>{value}</MenuItem>;
+                })}
+              </Select>
+            </FormControl>
+
+            {/* <FormLabel>Marca</FormLabel>
             <TextField
               value={inputs.marca}
               onChange={handleChange}
@@ -87,7 +130,7 @@ const CarDetail = () => {
               fullWidth
               variant="outlined"
               name="marca"
-            />
+            /> */}
             <FormLabel>Ano</FormLabel>
             <TextField
               value={inputs.ano}
